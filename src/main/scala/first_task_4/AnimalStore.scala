@@ -1,6 +1,8 @@
 package first_task_4
 
-object AnimalStore extends App {
+import first_task_4.BankService.BankService
+
+object AnimalStore {
   // Класс представляет склад с животными
   class AnimalStore {
     var animals: List[Animal] = List()
@@ -22,10 +24,10 @@ object AnimalStore extends App {
     }
 
     // Метод для покупки животного
-    def buyAnimal(animalName: String): (Animal, Double, List[Animal]) = {
+    def buyAnimal(animalName: String): (Animal, BankService, List[Animal]) = {
       this.animals.find(_.name == animalName) match {
-        case Some(a) => (a, a.price, this.animals.filterNot(_ == a))
-        case None => (null, 0.0, this.animals)
+        case Some(a) => (a, BankService(a.price), this.animals.filterNot(_ == a))
+        case None => (null, BankService(0.0), this.animals)
       }
     }
   }

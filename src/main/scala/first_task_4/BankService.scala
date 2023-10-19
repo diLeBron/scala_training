@@ -1,12 +1,9 @@
 package first_task_4
 
-object BankService extends App {
+object BankService {
   // Класс представляет банковский сервис
-  class BankService(var balance: Double) {
+  case class BankService(balance: Double) {
     // Метод для списания средств с банковского счета
-    def deductFunds(amount: Double): Double = {
-      balance -= amount
-      balance
-    }
+    def deductFunds(other: BankService): BankService = BankService(balance - other.balance)
   }
 }
