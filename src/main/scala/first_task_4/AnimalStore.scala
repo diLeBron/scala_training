@@ -1,39 +1,31 @@
 package first_task_4
 
-object AnimalStore extends App {
-  // Класс представляет склад с животными
-  class AnimalStore {
-    var animals: List[Animal] = List()
+// Класс представляет склад с животными
+class AnimalStore(animalState: AnimalState) {
+  private def add(other: AnimalState): AnimalState = AnimalState(animalState.animals ::: other.animals)
 
-    private def add(currentAnimals: List[Animal], newAnimal: Animal): List[Animal] = currentAnimals :+ newAnimal
+  def this(animal: Animal) = this(AnimalState(List(animal)))
 
-    def this(animal: Animal) = {
-      this()
-      this.animals :+ animal
-    }
+  def this(animals: List[Animal]) = this(AnimalState(animals))
 
-    def this(animals: List[Animal]) = {
-      this()
-      this.animals = animals
-    }
+  def showAnimals(): Unit = animalState.animals.map(x => x.name).foreach(println)
 
-    def showAnimals(): Unit = {
-      animals.map(x => x.name).foreach(println)
-    }
-
-    // Метод для покупки животного
-    def buyAnimal(animalName: String): (Animal, Double, List[Animal]) = {
-      this.animals.find(_.name == animalName) match {
-        case Some(a) => (a, a.price, this.animals.filterNot(_ == a))
-        case None => (null, 0.0, this.animals)
-      }
+  // Метод для покупки животного
+  def buyAnimal(animalName: String): (Animal, BankService, AnimalState) = {
+    animalState.animals.find(_.name == animalName) match {
+      case Some(a) => (a, BankService(a.price), AnimalState(animalState.animals.filterNot(_ == a)))
+      case None => (null, BankService(0.0), AnimalState(animalState.animals))
     }
   }
+}
 
-  object AnimalStore {
-    // Метод для добавления животного на склад
-    def addAnimal(currentAnimals: List[Animal], newAnimal: Animal): List[Animal] = {
-      new AnimalStore().add(currentAnimals, newAnimal)
-    }
+object AnimalStore {
+  // Метод для добавления животного на склад
+  def addAnimal(animalState: AnimalState, newAnimal: Animal): AnimalState = {
+    new AnimalStore(animalState).add(AnimalState(List(newAnimal)))
+  }
+
+  def addAnimal(animalState: AnimalState, newAnimals: List[Animal]): AnimalState = {
+    new AnimalStore(animalState).add(AnimalState(newAnimals))
   }
 }
